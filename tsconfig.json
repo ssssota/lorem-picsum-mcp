@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"target": "ES2022",
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"rootDirs": [".", "./.chapplin/types"]
+	},
+	"include": ["src", "tools", "resources", "prompts", ".chapplin/types"]
+}
