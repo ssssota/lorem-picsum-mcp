@@ -7,7 +7,7 @@ export const tool = defineTool({
   config: {
     description: "Get image by ID",
     inputSchema: {
-      id: z.int().nonnegative().describe("Image ID"),
+      id: z.int().min(0).max(1084).describe("Image ID"),
       scale: z
         .object({
           width: z
@@ -30,6 +30,12 @@ export const tool = defineTool({
     outputSchema: {
       url: z.url().describe("Image URL"),
     },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
+    }
   },
   async handler(args) {
     const resp = await fetch(`https://picsum.photos/id/${args.id}/info`);
@@ -71,7 +77,7 @@ export const app = defineApp<typeof tool>({
       <Show when={props.output} fallback={<p>Loading...</p>}>
         <div>
           <h1>Image Found (ID:{props.output?._meta?.info.id})</h1>
-          <img src={props.output?.structuredContent?.url} alt="Fetched Image" />
+          <img src={props.output?.structuredContent?.url} alt="Fetched Image" style="max-width: 100%; height: auto; max-height: 10vh; object-fit: contain;" />
         </div>
       </Show>
     );
