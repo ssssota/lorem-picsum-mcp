@@ -1,4 +1,5 @@
 import { defineApp, defineTool } from "chapplin";
+import { useApp } from "chapplin/solid";
 import { Show } from "solid-js";
 import z from "zod";
 
@@ -34,7 +35,7 @@ export const tool = defineTool({
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true,
-      openWorldHint: true,
+      openWorldHint: false,
     }
   },
   async handler(args) {
@@ -73,11 +74,20 @@ export const app = defineApp<typeof tool>({
     },
   },
   ui(props) {
+    const app = useApp();
+    const onLinkClick = (ev: Event) => {
+      const href = ev.currentTarget instanceof HTMLAnchorElement ? ev.currentTarget.href : null;
+      if (!href) return;
+      ev.preventDefault();
+      app.openLink({ url: href });
+    };
     return (
       <Show when={props.output} fallback={<p>Loading...</p>}>
         <div>
           <h1>Image Found (ID:{props.output?._meta?.info.id})</h1>
-          <img src={props.output?.structuredContent?.url} alt="Fetched Image" style="max-width: 100%; height: auto; max-height: 10vh; object-fit: contain;" />
+          <a href={props.output?.structuredContent?.url} target="_blank" rel="noopener noreferrer" onclick={onLinkClick}>
+          <img src={props.output?.structuredContent?.url} alt="Fetched Image" style={`max-width: 100%; height: auto; max-height: 100px; object-fit: contain;`} />
+          </a>
         </div>
       </Show>
     );
